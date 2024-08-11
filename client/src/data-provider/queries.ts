@@ -150,6 +150,7 @@ export const useConversationsInfiniteQuery = (
         ...params,
         pageNumber: pageParam?.toString(),
         isArchived: params?.isArchived || false,
+        tags: params?.tags || [],
       }),
     {
       getNextPageParam: (lastPage) => {
@@ -185,6 +186,21 @@ export const useSharedLinksInfiniteQuery = (
         // If the current page number is less than total pages, return the next page number
         return currentPageNumber < totalPages ? currentPageNumber + 1 : undefined;
       },
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
+      ...config,
+    },
+  );
+};
+
+export const useConversationTagsQuery = (
+  config?: UseQueryOptions<t.TConversationTagsResponse>,
+): QueryObserverResult<t.TConversationTagsResponse> => {
+  return useQuery<t.TConversationTag[]>(
+    [QueryKeys.conversationTags],
+    () => dataService.getConversationTags(),
+    {
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
       refetchOnMount: false,
@@ -422,6 +438,13 @@ export const useFileDownload = (userId?: string, file_id?: string): QueryObserve
 export const useVoicesQuery = (): UseQueryResult<t.VoiceResponse> => {
   return useQuery([QueryKeys.voices], () => dataService.getVoices());
 };
+
+/* Custom config speech */
+export const useCustomConfigSpeechQuery = (): UseQueryResult<t.getCustomConfigSpeechResponse> => {
+  return useQuery([QueryKeys.customConfigSpeech], () => dataService.getCustomConfigSpeech());
+};
+
+/** Prompt */
 
 export const usePromptGroupsInfiniteQuery = (
   params?: t.TPromptGroupsWithFilterRequest,
